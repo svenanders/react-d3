@@ -63,7 +63,7 @@ var Arc = React.createClass({
         <text 
           className='arc-label-text'
           transform={t}
-          dy=".35em"
+          dy=".30em"
           style={{
             "textAnchor": "middle",
             "fill": props.labelTextFill,
@@ -112,11 +112,11 @@ var DataSeries = React.createClass({
       .sort(null);
     
     var arcData = pie(props.data);
-
-    var color = this.props.color;
-
+    var defaultColors = d3.scale.category20c();
     var arcs = [];
     arcData.forEach(function(arc, i) {
+      var colorFill = undefined != props.color[i] ? props.color[i] : defaultColors(i);
+
       arcs.push(
         <Arc
           startAngle={arc.startAngle}
@@ -125,7 +125,7 @@ var DataSeries = React.createClass({
           innerRadius={props.innerRadius}
           labelTextFill={props.labelTextFill}
           valueTextFill={props.valueTextFill}
-          fill={color(i)}
+          fill={colorFill}
           label={props.labels[i]}
           suffix={props.suffixes[i]}
           value={props.data[i]}
@@ -164,18 +164,19 @@ var PieChart = React.createClass({
     var data = _.pluck(this.props.data, 'value');
     var labels = _.pluck(this.props.data, 'label');
     var suffixes = _.pluck(this.props.data, 'suffix');
+    var colors = _.pluck(this.props.data, 'color');
     return (
       <Chart
         className='pie-chart'
-        width={this.props.width}
-        height={this.props.height}
+          width={this.props.width}
+          height={this.props.height}
       >
         <DataSeries
           labelTextFill={this.props.labelTextFill}
           valueTextFill={this.props.valueTextFill}
           labels={labels}
           suffixes={suffixes}
-          color={this.props.color}
+          color={colors}
           transform={transform}
           data={data}
           width={this.props.width}
